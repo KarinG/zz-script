@@ -7,7 +7,7 @@
 */
 
 // Input CSV -- 7 columns...
-//   AlexID,First Name,Last Name,Activity ID,Activity Type,Activity Type ID,Activity Date,Contact Method
+//   AlexID,Contact Subtype,First Name,Last Name,Activity ID,Activity Type,Activity Type ID,Activity Date,Contact Method
 $input_csv = 'data-to-be-fixed.csv';
 
 //
@@ -17,12 +17,12 @@ $input_csv = 'data-to-be-fixed.csv';
 $zz = [];
 $fh = fopen($input_csv, 'r');
 while (($row = fgetcsv($fh)) !== FALSE) {
-  if (strpos($row[4], 'ZZ') === 0) {
+  if (strpos($row[5], 'ZZ') === 0) {
 
     $alexid = $row[0];
-    $activity_id = $row[3];
-    $type = str_replace('ZZ - ', '', $row[4]);
-    $timestamp = strtotime($row[6]);
+    $activity_id = $row[4];
+    $type = str_replace('ZZ - ', '', $row[5]);
+    $timestamp = strtotime($row[7]);
 
     if (!isset($zz[$alexid])) {
       $zz[$alexid] = [];
@@ -45,17 +45,17 @@ $fh = fopen($input_csv, 'r');
 while (($row = fgetcsv($fh)) !== FALSE) {
 
   // Skip zz this time.
-  if (strpos($row[4], 'ZZ') === 0) {
+  if (strpos($row[5], 'ZZ') === 0) {
     continue;
   }
 
   $alexid = $row[0];
-  $timestamp = strtotime($row[6]);
+  $timestamp = strtotime($row[7]);
 
   $types = zz_find($zz, $alexid, $timestamp);
 
   if (!empty($types)) {
-    for ($i = 7; !empty($types); $i++) {
+    for ($i = 8; !empty($types); $i++) {
       $row[$i] = array_shift($types);
     }
     fputcsv(STDOUT, $row);
